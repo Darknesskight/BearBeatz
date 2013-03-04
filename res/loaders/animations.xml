@@ -1,0 +1,4 @@
+<resources>
+	<resource key="playerWalkRight" location="res/images/entities/player/bear.png" tileWidth="42" tileHeight="29" animationSpeed="100" />
+	<resource key="playerWalkLeft" location="res/images/entities/player/bear.png" tileWidth="42" tileHeight="29" animationSpeed="100" flip="true" />
+</resources>

@@ -1,0 +1,4 @@
+<resources>
+	<resource key="m04" location="res/fonts/m04.ttf" />
+	<resource key="m04b" location="res/fonts/m04b.ttf" />
+</resources>
