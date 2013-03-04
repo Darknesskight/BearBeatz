@@ -45,7 +45,7 @@ public class Game extends StateBasedGame {
     private ResourceManager rm;
 
     //Player object, main controlled entity in the game
-    private Player player = new Player(new SmRectangle(32, 32, 42, 29));
+    private Player player = new Player(new SmRectangle(32, 32, 29, 29));
     
     //debug boolean, true if debug mode is on
     private boolean debug = false;
