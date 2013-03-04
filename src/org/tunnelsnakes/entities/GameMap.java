@@ -3,6 +3,7 @@ package org.tunnelsnakes.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -130,8 +131,10 @@ public class GameMap implements Renderable {
      * @param g Graphics context
      */
     public void render(GameContainer gc, StateBasedGame game, Graphics g) {
-    	g.drawImage(((Game) game).getResourceManager().getImage("debugGrid"), 0, 0);
+    	g.setColor(Color.white);
+    	g.fillRect(0, 0, map.getWidth()*map.getTileWidth(), map.getHeight() * map.getTileHeight());
         if(((Game) game).isDebug()) {
+        	g.drawImage(((Game) game).getResourceManager().getImage("debugGrid"), 0, 0);
             for(Block b : blocks) {
                 b.render(gc, game, g);
             }

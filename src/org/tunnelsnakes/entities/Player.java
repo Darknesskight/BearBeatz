@@ -181,7 +181,7 @@ public class Player extends ControlledEntity {
     
     @Override
     protected void destroy() {
-        shape.setLocation(186, 500);
+        shape.setLocation(32, 32);
         movementLine = new Path(shape.getCenterX(), shape.getCenterY());
     }
 

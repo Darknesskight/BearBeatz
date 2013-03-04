@@ -1,3 +1,4 @@
 <resources>
     <resource key="test" location="res/maps/test.tmx" />>
+    <resource key="level1" location="res/maps/level1.tmx" />>
 </resources>

@@ -55,7 +55,7 @@ public class LoadState extends BasicGameState {
     public void update(GameContainer gc, StateBasedGame game, int delta) throws SlickException {
         if(rm.getProgress() == 100 && gc.getTime() - time > delay) {
         	System.out.println(rm.getProgress());
-            ((Game) game).addGameMap(new GameMap(rm.getMap("test")));
+            ((Game) game).addGameMap(new GameMap(rm.getMap("level1")));
             ((Game) game).getCurGameMap().init(gc, game);
             ((Game) game).getPlayer().setupAnimations(game);
             game.enterState(Game.IN_GAME_STATE_ID, new FadeOutTransition(), new FadeInTransition());
