@@ -21,8 +21,8 @@ public class Block extends Entity {
      * 
      * @param shape Shape of the Entity
      */
-    public Block(Shape shape) {
-        super(shape);
+    public Block(Shape shape, GameMap map) {
+        super(shape, map);
     }
     
     /**

@@ -15,16 +15,16 @@ import org.newdawn.slick.util.ResourceLoader;
 
 public class ResourceManager {
     
-    private HashMap<String, Resource> mapResources = new HashMap<String, Resource>();
-    private HashMap<String, Resource> imgResources = new HashMap<String, Resource>();
-    private HashMap<String, Resource> musicResources = new HashMap<String, Resource>();
-    private HashMap<String, Resource> fontResources = new HashMap<String, Resource>();
-    private HashMap<String, Resource> animationResources = new HashMap<String, Resource>();
-    private HashMap<String, TiledMap> maps = new HashMap<String, TiledMap>();
-    private HashMap<String, Image> images = new HashMap<String, Image>();
-    private HashMap<String, Music> music = new HashMap<String, Music>();
-    private HashMap<String, UnicodeFont> fonts = new HashMap<String, UnicodeFont>();
-    private HashMap<String, Animation> animations = new HashMap<String, Animation>();
+    private static HashMap<String, Resource> mapResources = new HashMap<String, Resource>();
+    private static HashMap<String, Resource> imgResources = new HashMap<String, Resource>();
+    private static HashMap<String, Resource> musicResources = new HashMap<String, Resource>();
+    private static HashMap<String, Resource> fontResources = new HashMap<String, Resource>();
+    private static HashMap<String, Resource> animationResources = new HashMap<String, Resource>();
+    private static HashMap<String, TiledMap> maps = new HashMap<String, TiledMap>();
+    private static HashMap<String, Image> images = new HashMap<String, Image>();
+    private static HashMap<String, Music> music = new HashMap<String, Music>();
+    private static HashMap<String, UnicodeFont> fonts = new HashMap<String, UnicodeFont>();
+    private static HashMap<String, Animation> animations = new HashMap<String, Animation>();
     
     public ResourceManager(String imgRef, String mapRef, String musicRef, String soundRef, String fontRef, String animationRef) {
         Resources sources = JAXB.unmarshal(ResourceLoader.getResourceAsStream(mapRef), Resources.class);
@@ -53,61 +53,61 @@ public class ResourceManager {
         }
     }
     
-    public HashMap<String, Resource> getMapResources() {
+    public static HashMap<String, Resource> getMapResources() {
         return mapResources;
     }
     
-    public HashMap<String, Resource> getImgResources() {
+    public static HashMap<String, Resource> getImgResources() {
         return imgResources;
     }
 
-    public HashMap<String, Resource> getMusicResources() {
+    public static HashMap<String, Resource> getMusicResources() {
         return musicResources;
     }
     
-    public HashMap<String, Resource> getFontResources() {
+    public static HashMap<String, Resource> getFontResources() {
         return fontResources;
     }
     
-    public HashMap<String, Resource> getAnimationResources() {
+    public static HashMap<String, Resource> getAnimationResources() {
         return animationResources;
     }
     
-    public HashMap<String, TiledMap> getMaps() {
+    public static HashMap<String, TiledMap> getMaps() {
         return maps;
     }
     
-    public HashMap<String, Image> getImages() {
+    public static HashMap<String, Image> getImages() {
         return images;
     }
 
-    public HashMap<String, Music> getMusic() {
+    public static HashMap<String, Music> getMusic() {
         return music;
     }
     
-    public HashMap<String, UnicodeFont> getFonts() {
+    public static HashMap<String, UnicodeFont> getFonts() {
         return fonts;
     }
     
-    public HashMap<String, Animation> getAnimations() {
+    public static HashMap<String, Animation> getAnimations() {
         return animations;
     }
     
-    public void load(String key, TiledMap t) {
+    public static void load(String key, TiledMap t) {
         maps.put(key, t);
     }
     
-    public void load(String key, Image i) throws SlickException {
+    public static void load(String key, Image i) throws SlickException {
         i.setFilter(Image.FILTER_NEAREST);
         images.put(key, i);
     }
     
-    public void load(String key, Music m) {
+    public static void load(String key, Music m) {
         music.put(key, m);
     }
     
     @SuppressWarnings("unchecked")
-    public void load(String key, UnicodeFont f) throws SlickException {
+    public static void load(String key, UnicodeFont f) throws SlickException {
         f.addAsciiGlyphs();
         f.addGlyphs(400, 600);
         f.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
@@ -115,14 +115,14 @@ public class ResourceManager {
         fonts.put(key, f);
     }
     
-    public void load(String key, Animation a) {
+    public static void load(String key, Animation a) {
         for(int i = 0; i < a.getFrameCount(); i++) {
             a.getImage(i).setFilter(Image.FILTER_NEAREST);
         }
         animations.put(key, a);
     }
     
-    public TiledMap getMap(String key) {
+    public static TiledMap getMap(String key) {
         if(maps.containsKey(key)) {
             return maps.get(key);
         } else {
@@ -130,7 +130,7 @@ public class ResourceManager {
         }
     }
     
-    public Image getImage(String key) {
+    public static Image getImage(String key) {
         if(images.containsKey(key)) {
             return images.get(key);
         } else {
@@ -138,7 +138,7 @@ public class ResourceManager {
         }
     }
     
-    public Music getMusic(String key) {
+    public static Music getMusic(String key) {
         if(music.containsKey(key)) {
             return music.get(key);
         } else {
@@ -146,7 +146,7 @@ public class ResourceManager {
         }
     }
     
-    public UnicodeFont getFont(String key) {
+    public static UnicodeFont getFont(String key) {
         if(fonts.containsKey(key)) {
             return fonts.get(key);
         } else {
@@ -154,7 +154,7 @@ public class ResourceManager {
         }
     }
     
-    public Animation getAnimation(String key) {
+    public static Animation getAnimation(String key) {
         if(animations.containsKey(key)) {
             return animations.get(key);
         } else {
@@ -162,7 +162,7 @@ public class ResourceManager {
         }
     }
     
-    public int getProgress() {
+    public static int getProgress() {
         return (int) (((float) (maps.size() + images.size() + music.size() + fonts.size() + animations.size())) / 
                 (mapResources.size() + imgResources.size() + musicResources.size() + fontResources.size() + animationResources.size()) * 100);
     }

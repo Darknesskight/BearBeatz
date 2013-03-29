@@ -15,8 +15,9 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Path;
 import org.newdawn.slick.geom.Shape;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 /**
  * Player defines a new Entity controlled by the user.
@@ -31,10 +32,10 @@ public class Player extends ControlledEntity {
     private final int DEF_JUMP_SPEED = 6;
     
     
-	//boolean determining if player is currently jumping
+	//boolean deteResourceManagerining if player is currently jumping
     private boolean jump = false;
     
-    //boolean determining if player is currently sprinting
+    //boolean deteResourceManagerining if player is currently sprinting
     private boolean sprint = false;
     
     //speed of the jump
@@ -47,20 +48,13 @@ public class Player extends ControlledEntity {
     //Stack containing the animations being used by the player. Only the top of the stack will render
     private Stack<Animation> animationStack = new Stack<Animation>();
     
-    //ResourceManager context
-    private ResourceManager rm;
-    
-    //StateBasedGame context
-    private StateBasedGame game;
-    
-    
     /**
      * Constructs new Player with given shape
      * 
      * @param shape Shape used for collisions and positions
      */
-    public Player(Shape shape) {
-        super(shape);
+    public Player(Shape shape, GameMap map) {
+        super(shape, map);
         nextStep = new SmRectangle(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
     }
 
@@ -73,35 +67,49 @@ public class Player extends ControlledEntity {
     @Override
     public void init(GameContainer gc, StateBasedGame game) {
         super.init(gc, game);
-        ((Game) game).getRenderQueue().add(this);
-        rm = ((Game) game).getResourceManager();
-        this.game = game;
     }
     
     public void setupAnimations(StateBasedGame game) {
         //Set and load player's static 'animation'
-        Image[] player = new Image[] { ((Game) game).getResourceManager().getAnimation("playerWalkRight").getImage(0) };
-        ((Game) game).getResourceManager().load("playerRight", new Animation(player, 1));
-        ((Game) game).getResourceManager().load("playerLeft", AnimationUtils.returnFlippedAnimation(new Animation(player, 1)));
-        animationStack.push(((Game) game).getResourceManager().getAnimation("playerRight"));
+        Image[] player = new Image[] { ResourceManager.getAnimation("playerWalkRight").getImage(0) };
+        ResourceManager.load("playerRight", new Animation(player, 1));
+        ResourceManager.load("playerLeft", AnimationUtils.returnFlippedAnimation(new Animation(player, 1)));
+        animationStack.push(ResourceManager.getAnimation("playerRight"));
     }
     
     @Override
     public void update(GameContainer gc, StateBasedGame game, int delta) {
         super.update(gc, game, delta);
-        if(!inMoveStack.isEmpty()) getMovement(inMoveStack.peek(), game);
+        if(!getInMoveStack().isEmpty()) getMovement(getInMoveStack().peek(), game);
         if(animationStack.size() == 1) {
-            if(dir.equals("left")) animationStack.set(0, rm.getAnimation("playerLeft"));
-            if(dir.equals("right")) animationStack.set(0, rm.getAnimation("playerRight"));
+            if(dir.equals("left")) animationStack.set(0, ResourceManager.getAnimation("playerLeft"));
+            if(dir.equals("right")) animationStack.set(0, ResourceManager.getAnimation("playerRight"));
         }
         jump(game);
         checkDeath();
+        checkWarps(gc, game);
     }
 
-    @Override
+	private void checkWarps(GameContainer gc, StateBasedGame game) {
+		for(Warp w : map.getWarps()) {
+			if(collidingBlock.getShape().intersects(w.getShape()) && onGround && shape.getY() < w.getShape().getY()) {
+				if(w.getType().equals("state")) {
+					if(w.getValue().equals("inGame") && gc.getInput().isKeyDown(Input.KEY_ENTER)) {
+			            game.enterState(Game.IN_GAME_STATE_ID, new FadeOutTransition(), new FadeInTransition());
+					}
+				} else if(w.getType().equals("container") && gc.getInput().isKeyDown(Input.KEY_ENTER)) {
+					if(w.getValue().equals("exit")) {
+						System.exit(0);
+					}
+				}
+			}
+		}
+	}
+
+	@Override
     public void render(GameContainer gc, StateBasedGame game, Graphics g) {
         super.render(gc, game, g);
-        //g.drawImage(((Game) game).getResourceManager().getImage("player"), shape.getX(), shape.getY());
+        if(animationStack.isEmpty()) setupAnimations(game);
         g.drawAnimation(animationStack.peek(), shape.getX() - ((animationStack.peek().getWidth() - shape.getWidth())/2), shape.getY());
         if(((Game) game).isDebug()) {
             g.setColor(new Color(0, 125, 125, 128));
@@ -131,7 +139,7 @@ public class Player extends ControlledEntity {
             jump = true;
             gravCap = 0;
             gravSpeed = 0;
-            if(collidingBlock.isOneWay() && inputStack.contains(Input.KEY_DOWN)) {
+            if(collidingBlock.isOneWay() && getInputStack().contains(Input.KEY_DOWN)) {
             	jumpSpeed = 3.0;
             	skipOneWay = true;
             }
@@ -139,8 +147,6 @@ public class Player extends ControlledEntity {
             sprint = true;
         } else if(key == Input.KEY_K) {
             destroy();
-        } else if(key == Input.KEY_UP) {
-            ((Game) game).getCurGameMap().getCamera().moveTo(new Vector2f(shape.getCenterX(), shape.getCenterY() - 90), 2);
         }
         changeCurAnimation(key);
     }
@@ -155,9 +161,7 @@ public class Player extends ControlledEntity {
             jumpSpeed = DEF_JUMP_SPEED;
         } else if(key == Input.KEY_LSHIFT) {
             sprint = false;
-        } else if(key == Input.KEY_UP) {
-            ((Game) game).getCurGameMap().getCamera().moveTo(new Vector2f(shape.getCenterX(), shape.getCenterY()), 2);
-        }
+        } 
     }
     
     private void jump(StateBasedGame game) {
@@ -193,56 +197,56 @@ public class Player extends ControlledEntity {
     
     private void changeCurAnimation(int inputKey) {
         if(inputKey == Input.KEY_LEFT) {
-            animationStack.push(rm.getAnimation("playerWalkLeft"));
+            animationStack.push(ResourceManager.getAnimation("playerWalkLeft"));
             removeNonMovementAnimations();
         } else if(inputKey == Input.KEY_RIGHT) {
-            animationStack.push(rm.getAnimation("playerWalkRight"));
+            animationStack.push(ResourceManager.getAnimation("playerWalkRight"));
             removeNonMovementAnimations();
         } else if(inputKey == Input.KEY_SPACE) {
-            //if(dir.equals("left")) animationStack.push(rm.getAnimation("playerJumpLeft"));
-            //else animationStack.push(rm.getAnimation("playerJumpRight"));
+            //if(dir.equals("left")) animationStack.push(ResourceManager.getAnimation("playerJumpLeft"));
+            //else animationStack.push(ResourceManager.getAnimation("playerJumpRight"));
             removeNonMovementAnimations();
-        } else if(inputKey == Input.KEY_UP && inMoveStack.isEmpty()) {
-            //if(dir.equals("left")) animationStack.push(rm.getAnimation("playerLookUpLeft"));
-            //else animationStack.push(rm.getAnimation("playerLookUpRight"));
-        } else if(inputKey == Input.KEY_DOWN && inMoveStack.isEmpty()) {
-            //if(dir.equals("left")) animationStack.push(rm.getAnimation("playerLookDownLeft"));
-            //else animationStack.push(rm.getAnimation("playerLookDownRight"));
+        } else if(inputKey == Input.KEY_UP && getInMoveStack().isEmpty()) {
+            //if(dir.equals("left")) animationStack.push(ResourceManager.getAnimation("playerLookUpLeft"));
+            //else animationStack.push(ResourceManager.getAnimation("playerLookUpRight"));
+        } else if(inputKey == Input.KEY_DOWN && getInMoveStack().isEmpty()) {
+            //if(dir.equals("left")) animationStack.push(ResourceManager.getAnimation("playerLookDownLeft"));
+            //else animationStack.push(ResourceManager.getAnimation("playerLookDownRight"));
         }
     }
     
     private void releaseAnimation(int inputKey, boolean pastRelease) {
         if(inputKey == Input.KEY_UP) {
             if(dir.equals("left") || pastRelease) {
-                //rm.getAnimation("playerLookUpLeft").restart();
-                //animationStack.remove(rm.getAnimation("playerLookUpLeft"));
+                //ResourceManager.getAnimation("playerLookUpLeft").restart();
+                //animationStack.remove(ResourceManager.getAnimation("playerLookUpLeft"));
             } 
             if(dir.equals("right") || pastRelease) {
-                //rm.getAnimation("playerLookUpRight").restart();
-                //animationStack.remove(rm.getAnimation("playerLookUpRight"));
+                //ResourceManager.getAnimation("playerLookUpRight").restart();
+                //animationStack.remove(ResourceManager.getAnimation("playerLookUpRight"));
             }
         } else if(inputKey == Input.KEY_DOWN) {
             if(dir.equals("left") || pastRelease) {
-                //rm.getAnimation("playerLookDownLeft").restart();
-                //animationStack.remove(rm.getAnimation("playerLookDownLeft"));
+                //ResourceManager.getAnimation("playerLookDownLeft").restart();
+                //animationStack.remove(ResourceManager.getAnimation("playerLookDownLeft"));
             } 
             if(dir.equals("right") || pastRelease) {
-                //rm.getAnimation("playerLookDownRight").restart();
-                //animationStack.remove(rm.getAnimation("playerLookDownRight"));
+                //ResourceManager.getAnimation("playerLookDownRight").restart();
+                //animationStack.remove(ResourceManager.getAnimation("playerLookDownRight"));
             }
         } else if(inputKey == Input.KEY_SPACE) {
             if(dir.equals("left") || pastRelease) {
-                //rm.getAnimation("playerJumpLeft").restart();
-                //animationStack.remove(rm.getAnimation("playerJumpLeft"));
+                //ResourceManager.getAnimation("playerJumpLeft").restart();
+                //animationStack.remove(ResourceManager.getAnimation("playerJumpLeft"));
             } 
             if(dir.equals("right") || pastRelease) {
-                //rm.getAnimation("playerJumpRight").restart();
-                //animationStack.remove(rm.getAnimation("playerJumpRight"));
+                //ResourceManager.getAnimation("playerJumpRight").restart();
+                //animationStack.remove(ResourceManager.getAnimation("playerJumpRight"));
             }
         } else if(inputKey == Input.KEY_LEFT) {
-            animationStack.remove(rm.getAnimation("playerWalkLeft"));
+            animationStack.remove(ResourceManager.getAnimation("playerWalkLeft"));
         } else if(inputKey == Input.KEY_RIGHT) {
-            animationStack.remove(rm.getAnimation("playerWalkRight"));
+            animationStack.remove(ResourceManager.getAnimation("playerWalkRight"));
         }
     }
     

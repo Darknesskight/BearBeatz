@@ -1,52 +1,56 @@
 package org.tunnelsnakes.states;
 
 
-import org.newdawn.slick.Color;
+import java.util.Collections;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.tunnelsnakes.Game;
-import org.tunnelsnakes.menus.MainMenu;
-import org.tunnelsnakes.menus.Menu;
+import org.tunnelsnakes.entities.GameMap;
+import org.tunnelsnakes.entities.Player;
+import org.tunnelsnakes.geom.SmRectangle;
+import org.tunnelsnakes.util.ResourceManager;
 
-public class MainMenuState extends BasicGameState {
-    private Menu menu;
-    
-    private boolean loaded = false;
+public class MainMenuState extends BearState {
     
     public void init(GameContainer gc, StateBasedGame game) throws SlickException { 
-    }
-    
-    @Override 
-    public void enter(GameContainer gc, StateBasedGame game) {
-        menu = new MainMenu(30);
-        menu.init(gc, game);
-        loaded = true;
-    }
-    
-    @Override
-    public void leave(GameContainer gc, StateBasedGame game) {
-        gc.getInput().disableKeyRepeat();
+    	try {
+    		map = new GameMap(ResourceManager.getMap("title"));
+    		Game.getCamera().setMap(map);
+    		player = new Player(new SmRectangle(0, 0, 32, 32), map);
+            player.init(gc, game);
+    	} catch(Exception e) {}
+    	super.init(gc, game);
     }
     
     public void update(GameContainer gc, StateBasedGame game, int delta) throws SlickException {
-        menu.update(gc, game, delta);
+    	super.update(gc, game, delta);
+        player.update(gc, game, delta);
+        map.update(gc, game, delta);
+        if(gc.getInput().isKeyPressed(Input.KEY_D)) {
+            if(((Game) game).isDebug()) ((Game) game).setDebug(false);
+            else ((Game) game).setDebug(true);
+        }
     }
 
     public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException {
-        if(loaded) {
-            g.scale(((Game) game).getCurGameMap().getCamera().getScale(), ((Game) game).getCurGameMap().getCamera().getScale());
-            g.setColor(Color.blue);
-            g.fillRect(0, 0, gc.getWidth(), gc.getHeight());
-            menu.render(gc, game, g);
-        }
+		super.render(gc, game, g);
     }
 
     @Override
     public int getID() {
         return Game.MAIN_MENU_STATE_ID;
     }
+
+	public boolean isLoaded() {
+		return loaded;
+	}
+
+	public void setLoaded(boolean loaded) {
+		this.loaded = loaded;
+	}
 
 }

@@ -9,7 +9,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import org.tunnelsnakes.Game;
@@ -22,8 +21,6 @@ import org.tunnelsnakes.attributes.Renderable;
  *
  */
 public class GameMap implements Renderable {
-	//Camera used on the map
-    private Camera camera;
     
     //TiledMap of map
     private TiledMap map;
@@ -33,6 +30,9 @@ public class GameMap implements Renderable {
     
     //List containing all the collision blocks on the map
     private List<Block> blocks = new ArrayList<Block>();
+
+    //List containing all the warps on the map
+    private List<Warp> warps = new ArrayList<Warp>();
     
     //All MapLayers on the map
     private List<MapLayer> layers = new ArrayList<MapLayer>();
@@ -61,31 +61,48 @@ public class GameMap implements Renderable {
             if(Boolean.parseBoolean(map.getLayerProperty(i, "abovePlayer", "false"))) {
                 priority += 1001;
             }
-            layers.add(new MapLayer(map, i, priority));
+            if(!Boolean.parseBoolean(map.getLayerProperty(i, "invisible", "false"))) {
+            	layers.add(new MapLayer(map, i, priority));
+            }
         }
         width = map.getWidth() * map.getTileWidth();
         height = map.getHeight() * map.getTileHeight();
-        locateBlocks();
+        locateSpecials();
     }
     
     /**
      * Goes through the tiledMap and finds all the collidable tiles and creates Blocks at those locations
      */
-    private void locateBlocks() {
-        int collisionLayer = 0;
+    private void locateSpecials() {
+    	
+    	/* Find the layer of collision and layer of special */
+        int collisionLayer = 0, specialLayer = 0;
         for(int i = 0; i < map.getLayerCount(); i++) { //get the layer which contains the collision blocks
             if(Boolean.parseBoolean(map.getLayerProperty(i, "collisionMask", "false"))) collisionLayer = i; 
+            if(Boolean.parseBoolean(map.getLayerProperty(i, "specialMask", "false"))) specialLayer = i;
         }
         int tileId = 0;
         for(int i = 0; i < map.getWidth(); i++) {
             for(int k = 0; k < map.getHeight(); k++) {
                 tileId = map.getTileId(i, k, collisionLayer);
+                
+                /* Find Collidable Block, create new Block instance */
                 if(Boolean.parseBoolean(map.getTileProperty(map.getTileId(i, k, collisionLayer), "solid", "false"))) {
                     blocks.add(new Block(new Rectangle(i * map.getTileWidth(), k * map.getTileHeight(), 
-                            map.getTileWidth(), map.getTileHeight())));
+                            map.getTileWidth(), map.getTileHeight()), this));
                     if(Boolean.parseBoolean(map.getTileProperty(tileId, "oneWay", "false")))  {
                         blocks.get(blocks.size()-1).setOneWay(true);
                     }
+                }
+
+                tileId = map.getTileId(i, k, specialLayer);
+                /* Find Special Block, create new instance of type */
+                if(Boolean.parseBoolean(map.getTileProperty(tileId, "warp", "false"))) {
+                	warps.add(new Warp(new Rectangle(i * map.getTileWidth(), k * map.getTileHeight(),
+                			map.getTileWidth(), map.getHeight()),
+                			this,
+                			map.getTileProperty(tileId, "warpType", "null"),
+                			map.getTileProperty(tileId, "warpValue", "null")));
                 }
             }
         }
@@ -98,13 +115,9 @@ public class GameMap implements Renderable {
      * @param game StateBasedGame context
      */
     public void init(GameContainer gc, StateBasedGame game) {
-        //levelMusic = ((Game) game).getResourceManager().getMusic(map.getMapProperty("levelMusic", ""));
-        //playMusic();
-        camera = new Camera(new Vector2f(((Game) game).getPlayer().getShape().getCenterX(), ((Game) game).getPlayer().getShape().getCenterY()), ((Game) game).getCurGameMap());
         for(MapLayer layer : layers) {
             layer.init(gc, game);
         }
-        ((Game) game).getRenderQueue().add(this);
     }
     
     /**
@@ -115,7 +128,6 @@ public class GameMap implements Renderable {
      * @param delta time since last update call
      */
     public void update(GameContainer gc, StateBasedGame game, int delta) {
-        camera.update(gc, game, delta);
         Input input = gc.getInput();
         if(input.isKeyPressed(Input.KEY_M)) {
             if(levelMusic.playing()) stopMusic();
@@ -134,7 +146,6 @@ public class GameMap implements Renderable {
     	g.setColor(Color.white);
     	g.fillRect(0, 0, map.getWidth()*map.getTileWidth(), map.getHeight() * map.getTileHeight());
         if(((Game) game).isDebug()) {
-        	g.drawImage(((Game) game).getResourceManager().getImage("debugGrid"), 0, 0);
             for(Block b : blocks) {
                 b.render(gc, game, g);
             }
@@ -187,15 +198,6 @@ public class GameMap implements Renderable {
     }
     
     /**
-     * Getter for camera
-     * 
-     * @return camera
-     */
-    public Camera getCamera() {
-        return camera;
-    }
-    
-    /**
      * Getter for map
      * 
      * @return map
@@ -212,4 +214,21 @@ public class GameMap implements Renderable {
     public int getRenderPriority() {
         return renderPriority;
     }
+
+	public List<Warp> getWarps() {
+		return warps;
+	}
+
+	public void setWarps(List<Warp> warps) {
+		this.warps = warps;
+	}
+
+	public List<MapLayer> getLayers() {
+		return layers;
+	}
+	
+	@Override
+	public String toString() {
+		return map.toString();
+	}
 }

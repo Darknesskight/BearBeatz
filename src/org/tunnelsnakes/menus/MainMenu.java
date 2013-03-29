@@ -9,6 +9,7 @@ import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.newdawn.slick.tiled.TiledMap;
 import org.tunnelsnakes.Game;
+import org.tunnelsnakes.util.ResourceManager;
 
 public class MainMenu extends Menu {
     
@@ -20,7 +21,7 @@ public class MainMenu extends Menu {
     
     @Override
     public void init(GameContainer gc, StateBasedGame game) {
-        map = ((Game) game).getResourceManager().getMap("title");
+        map = ResourceManager.getMap("title");
         options.add(loadOptions((int)(gc.getWidth()*.7), (int)(gc.getHeight()*.1), "Start", "Options", "Quit"));
         options.add(loadOptions((int)(gc.getWidth()*.1), (int)(gc.getHeight()*.1), "Video", "Audio", "Return"));
         super.init(gc, game);
@@ -47,7 +48,7 @@ public class MainMenu extends Menu {
             } else if(options.get(curPage)[curOption].getTitle().equals("Options")) {
                 curPage++;
                 setCurOption(0);
-                map = ((Game) game).getResourceManager().getMap("mainOptions");
+                map = ResourceManager.getMap("mainOptions");
             } else if(options.get(curPage)[curOption].getTitle().equals("Quit")) {
                 System.exit(0);
             }
@@ -59,7 +60,7 @@ public class MainMenu extends Menu {
             } else if(options.get(curPage)[curOption].getTitle().equals("Return")) {
                 curPage--;
                 setCurOption(0);
-                map = ((Game) game).getResourceManager().getMap("title");
+                map = ResourceManager.getMap("title");
             }
         }
     }

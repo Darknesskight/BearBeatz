@@ -1,7 +1,5 @@
 package org.tunnelsnakes.entities;
 
-import org.tunnelsnakes.Game;
-
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Vector2f;
@@ -30,7 +28,6 @@ public class Camera {
     //Point of Interest, what the camera is focusing on
     private Vector2f poi;
     
-    //GameMap the camera is on
     private GameMap map;
     
     //Constructs a new camera with a point of interest 
@@ -48,7 +45,6 @@ public class Camera {
      */
     public void update(GameContainer gc, StateBasedGame game, int delta) {
         Input input = gc.getInput();
-        poi.set(((Game) game).getPlayer().getShape().getCenterX(), ((Game) game).getPlayer().getShape().getCenterY());
         poi.set(poi.getX() + xOffset, poi.getY() + yOffset);
         if(!gc.isPaused()) {
             if(input.isKeyDown(Input.KEY_ADD)) scale += 0.01f;
@@ -126,5 +122,17 @@ public class Camera {
     public void moveTo(Vector2f point, float speed) {
         
     }
+
+	public Vector2f getPOI() {
+		return poi;
+	}
+
+	public GameMap getMap() {
+		return map;
+	}
+
+	public void setMap(GameMap map) {
+		this.map = map;
+	}
 
 }

@@ -2,7 +2,6 @@ package org.tunnelsnakes.entities;
 
 import java.util.List;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Path;
@@ -24,7 +23,7 @@ public class MoveableEntity extends Entity {
     protected final int DEF_GRAV_SPEED = 0;
     
     //Default cap for gravity. gravSpeed cannot go over this
-    protected final int DEF_GRAV_CAP = 8;
+    protected final int DEF_GRAV_CAP = 80;
     
     //Default speed for movement
     protected final int DEF_MOVE_SPEED = 2;
@@ -66,7 +65,7 @@ public class MoveableEntity extends Entity {
     protected Shape nextStep;
     
     //Block that is currently being collided with
-    protected Block collidingBlock = new Block(new SmRectangle(0,0,0,0));
+    protected Block collidingBlock;
 
     //Path showing the movement history of the entity
     protected Path movementLine = new Path(shape.getCenterX(), shape.getCenterY());
@@ -76,8 +75,9 @@ public class MoveableEntity extends Entity {
      * 
      * @param shape shape used by Entity for collisions and position
      */
-    public MoveableEntity(Shape shape) {
-        super(shape);
+    public MoveableEntity(Shape shape, GameMap map) {
+        super(shape, map);
+        collidingBlock = new Block(new SmRectangle(0,0,0,0), map);
     }
     
     /**
@@ -118,7 +118,7 @@ public class MoveableEntity extends Entity {
         nextStep.setY(shape.getY() + amount);
         nextStep.setX(shape.getX());
 
-        colliding = checkCollisions(((Game) game).getCurGameMap().getBlocks(), calcLAABB()); //determine if a collision is happening
+        colliding = checkCollisions(map.getBlocks(), calcLAABB()); //determine if a collision is happening
         if(!colliding) {
         	//jerry rigged way of telling if the entity is on the ground. I don't like this, but it appears to work
             if(gravSpeed > 2.0) {
@@ -146,7 +146,7 @@ public class MoveableEntity extends Entity {
         nextStep.setX(shape.getX() + amount);
         nextStep.setY(shape.getY());
         
-        colliding = checkCollisions(((Game) game).getCurGameMap().getBlocks(), calcLAABB());
+        colliding = checkCollisions(map.getBlocks(), calcLAABB());
         if(!colliding) {
             setXPosition();
         } else {

@@ -17,18 +17,18 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 public class ControlledEntity extends MoveableEntity implements KeyListener {
 	//Stack that contains ALL input fed in through the input device
-    protected Stack<Integer> inputStack = new Stack<Integer>();
+    private Stack<Integer> inputStack = new Stack<Integer>();
     
     //Stack that contains only the input used in movement
-    protected Stack<Integer> inMoveStack = new Stack<Integer>();
+    private Stack<Integer> inMoveStack = new Stack<Integer>();
 
     /**
      * Constructs a new ControlledEntity with shape
      * 
      * @param shape Shape of entity
      */
-    public ControlledEntity(Shape shape) {
-        super(shape);
+    public ControlledEntity(Shape shape, GameMap map) {
+        super(shape, map);
     }
     
     /**
@@ -102,5 +102,21 @@ public class ControlledEntity extends MoveableEntity implements KeyListener {
     public void inputStarted() {}
     public void setInput(Input input) {}
     public boolean isAcceptingInput() { return true; }
+
+	public Stack<Integer> getInputStack() {
+		return inputStack;
+	}
+
+	public void setInputStack(Stack<Integer> inputStack) {
+		this.inputStack = inputStack;
+	}
+
+	public Stack<Integer> getInMoveStack() {
+		return inMoveStack;
+	}
+
+	public void setInMoveStack(Stack<Integer> inMoveStack) {
+		this.inMoveStack = inMoveStack;
+	}
 
 }

@@ -14,6 +14,7 @@ import org.tunnelsnakes.attributes.Renderable;
  *
  */
 public class Entity implements Renderable {
+	protected GameMap map;
     
     //Slick shape used by the Entity for position and collision
     protected Shape shape;
@@ -23,8 +24,9 @@ public class Entity implements Renderable {
      * 
      * @param shape Slick shape used by the Entity for position and collision
      */
-    public Entity(Shape shape) {
+    public Entity(Shape shape, GameMap map) {
         this.shape = shape;
+        this.map = map;
     }
 
     /**

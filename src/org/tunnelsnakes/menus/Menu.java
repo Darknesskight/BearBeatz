@@ -56,11 +56,11 @@ public class Menu implements KeyListener {
     }
 
     public void render(GameContainer gc, StateBasedGame game, Graphics g) {
-        g.scale(1/((Game) game).getCurGameMap().getCamera().getScale(), 1/((Game) game).getCurGameMap().getCamera().getScale());
+        g.scale(1/Game.getCamera().getScale(), 1/Game.getCamera().getScale());
         for(int i = 0; i < options.get(curPage).length; i++) {
             options.get(curPage)[i].render(gc, game, g);
         }
-        g.scale(((Game) game).getCurGameMap().getCamera().getScale(), ((Game) game).getCurGameMap().getCamera().getScale());
+        g.scale(Game.getCamera().getScale(), Game.getCamera().getScale());
     }
     
 

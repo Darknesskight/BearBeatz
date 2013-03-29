@@ -44,7 +44,6 @@ public class MapLayer implements Renderable {
      * @param game StateBasedGame context
      */
     public void init(GameContainer gc, StateBasedGame game) {
-        ((Game) game).getRenderQueue().add(this);
     }
     
     /**

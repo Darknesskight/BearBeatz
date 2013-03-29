@@ -25,8 +25,6 @@ import org.tunnelsnakes.util.Resource;
 import org.tunnelsnakes.util.ResourceManager;
 
 public class LoadState extends BasicGameState {
-    //ResourceManager containing all resources
-    private ResourceManager rm;
     
     //Iterators for resources
     private Iterator<Entry<String, Resource>> images, maps, music, fonts, animations;
@@ -39,13 +37,12 @@ public class LoadState extends BasicGameState {
     
     private Image scaledImg;
 
-    public LoadState(ResourceManager rm) {
-        this.rm = rm;
-        images = rm.getImgResources().entrySet().iterator();
-        maps = rm.getMapResources().entrySet().iterator();
-        music = rm.getMusicResources().entrySet().iterator();
-        fonts = rm.getFontResources().entrySet().iterator();
-        animations = rm.getAnimationResources().entrySet().iterator();
+    public LoadState() {
+        images = ResourceManager.getImgResources().entrySet().iterator();
+        maps = ResourceManager.getMapResources().entrySet().iterator();
+        music = ResourceManager.getMusicResources().entrySet().iterator();
+        fonts = ResourceManager.getFontResources().entrySet().iterator();
+        animations = ResourceManager.getAnimationResources().entrySet().iterator();
     }
 
     public void init(GameContainer gc, StateBasedGame game) throws SlickException {
@@ -53,33 +50,32 @@ public class LoadState extends BasicGameState {
     }
 
     public void update(GameContainer gc, StateBasedGame game, int delta) throws SlickException {
-        if(rm.getProgress() == 100 && gc.getTime() - time > delay) {
-        	System.out.println(rm.getProgress());
-            ((Game) game).addGameMap(new GameMap(rm.getMap("level1")));
-            ((Game) game).getCurGameMap().init(gc, game);
-            ((Game) game).getPlayer().setupAnimations(game);
-            game.enterState(Game.IN_GAME_STATE_ID, new FadeOutTransition(), new FadeInTransition());
+        if(ResourceManager.getProgress() == 100 && gc.getTime() - time > delay) {
+
+        	game.getState(Game.MAIN_MENU_STATE_ID).init(gc, game);
+        	game.getState(Game.IN_GAME_STATE_ID).init(gc, game);
+            game.enterState(Game.MAIN_MENU_STATE_ID, new FadeOutTransition(), new FadeInTransition());
         }
 
         if(images.hasNext()) {
             Resource r = images.next().getValue();
             System.out.println(r.getLocation());
-            rm.load(r.getKey(), new Image(r.getLocation()));
+            ResourceManager.load(r.getKey(), new Image(r.getLocation()));
         } else if(maps.hasNext()) {
             Resource r = maps.next().getValue();
-            rm.load(r.getKey(), new TiledMap(r.getLocation(), "res/tilesets"));
+            ResourceManager.load(r.getKey(), new TiledMap(r.getLocation(), "res/tilesets"));
         } else if(music.hasNext()) {
             Resource r = music.next().getValue();
-            rm.load(r.getKey(), new Music(r.getLocation()));
+            ResourceManager.load(r.getKey(), new Music(r.getLocation()));
         } else if(fonts.hasNext()) {
             Resource r = fonts.next().getValue();
-            rm.load(r.getKey(), new UnicodeFont(r.getLocation(), 30, false, false));
+            ResourceManager.load(r.getKey(), new UnicodeFont(r.getLocation(), 30, false, false));
         } else if(animations.hasNext()) {
             Resource r = animations.next().getValue();
             Animation ani = new Animation(new SpriteSheet(new Image(r.getLocation()), r.getTileWidth(), r.getTileHeight()), r.getAnimationSpeed());
             if(r.getFlip()) ani = AnimationUtils.returnFlippedAnimation(ani);
             if(!r.getLooping()) ani.setLooping(false);
-            rm.load(r.getKey(), ani);
+            ResourceManager.load(r.getKey(), ani);
         }
     }
 
@@ -88,14 +84,14 @@ public class LoadState extends BasicGameState {
         g.fillRect(0, 0, gc.getWidth(), gc.getHeight());
         //try to render the splash screen (first resource to be loaded), if it's not loaded yet do nothing with the exception
         try {
-            scaledImg = rm.getImage("splash").getScaledCopy(gc.getWidth(), (int)(gc.getWidth() / (16.0/9.0)));
+            scaledImg = ResourceManager.getImage("splash").getScaledCopy(gc.getWidth(), (int)(gc.getWidth() / (16.0/9.0)));
             g.drawImage(scaledImg, 0, (gc.getHeight() - scaledImg.getHeight())/2);
         } catch(RuntimeException e) {}
         
         
         LoadingBar lb = new LoadingBar(5, gc.getHeight() - 35, gc.getWidth() - 10, 30);
-        lb.setProgress(rm.getProgress());
-        if(rm.getProgress() != 100) lb.render(gc, game, g);
+        lb.setProgress(ResourceManager.getProgress());
+        if(ResourceManager.getProgress() != 100) lb.render(gc, game, g);
     }
     
     @Override
