@@ -17,13 +17,15 @@ import org.tunnelsnakes.util.ResourceManager;
 public class MainMenuState extends BearState {
     
     public void init(GameContainer gc, StateBasedGame game) throws SlickException { 
+    	
     	try {
     		map = new GameMap(ResourceManager.getMap("title"));
     		Game.getCamera().setMap(map);
     		player = new Player(new SmRectangle(0, 0, 32, 32), map);
             player.init(gc, game);
+            super.init(gc, game);
     	} catch(Exception e) {}
-    	super.init(gc, game);
+    	
     }
     
     public void update(GameContainer gc, StateBasedGame game, int delta) throws SlickException {
@@ -45,12 +47,6 @@ public class MainMenuState extends BearState {
         return Game.MAIN_MENU_STATE_ID;
     }
 
-	public boolean isLoaded() {
-		return loaded;
-	}
 
-	public void setLoaded(boolean loaded) {
-		this.loaded = loaded;
-	}
 
 }

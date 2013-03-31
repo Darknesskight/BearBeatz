@@ -164,6 +164,7 @@ public class Player extends ControlledEntity {
         } 
     }
     
+    
     private void jump(StateBasedGame game) {
         if(jump) {
             if(jumpSpeed > -1) {
@@ -213,6 +214,12 @@ public class Player extends ControlledEntity {
             //if(dir.equals("left")) animationStack.push(ResourceManager.getAnimation("playerLookDownLeft"));
             //else animationStack.push(ResourceManager.getAnimation("playerLookDownRight"));
         }
+    }
+    
+    @Override
+    public void clearInput(){
+    	super.clearInput();
+    	animationStack.clear();
     }
     
     private void releaseAnimation(int inputKey, boolean pastRelease) {

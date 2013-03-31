@@ -30,8 +30,10 @@ public class StartMenu extends Menu {
     @Override
     public void keyPressed(int key, char c) {
         super.keyPressed(key, c);
-        if(key == Input.KEY_ENTER) {
-            click();
+        if(options.size()!=0){
+        	if(key == Input.KEY_ENTER) {
+        		click();
+        	}
         }
     }
     

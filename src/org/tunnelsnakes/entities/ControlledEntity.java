@@ -66,6 +66,10 @@ public class ControlledEntity extends MoveableEntity implements KeyListener {
     public void render(GameContainer gc, StateBasedGame game, Graphics g) {
         super.render(gc, game, g);
     }
+    
+    public void clearInput(){
+    	inMoveStack.clear();
+    }
 
     /**
      * Called when a key is pressed

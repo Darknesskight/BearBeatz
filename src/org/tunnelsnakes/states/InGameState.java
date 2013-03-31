@@ -7,6 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
+import org.newdawn.slick.tiled.TiledMap;
 import org.tunnelsnakes.Game;
 import org.tunnelsnakes.entities.GameMap;
 import org.tunnelsnakes.entities.Player;
@@ -14,13 +15,15 @@ import org.tunnelsnakes.geom.SmRectangle;
 import org.tunnelsnakes.util.ResourceManager;
 
 public class InGameState extends BearState {
-    
+    private boolean alreadyLoaded = false;
+	
 	@Override
     public void init(GameContainer gc, StateBasedGame game) throws SlickException {
+		renderQueue.clear();
     	try {
     		map = new GameMap(ResourceManager.getMap("level1"));
     		System.out.println(map + " SDFSDFSDSD");
-    		Game.getCamera().setMap(map);
+    		
     		player = new Player(new SmRectangle(0, 0, 32, 32), map);
             player.init(gc, game);
     	} catch(Exception e) {}
@@ -39,6 +42,11 @@ public class InGameState extends BearState {
             game.enterState(Game.PAUSE_STATE_ID, new FadeOutTransition(), new FadeInTransition());
         }
     }
+	
+	
+	public void leave(GameContainer gc, StateBasedGame game){
+		player.clearInput();
+	}
 
 	@Override
     public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException {

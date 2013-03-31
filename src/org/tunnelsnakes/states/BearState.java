@@ -18,13 +18,17 @@ import org.tunnelsnakes.entities.Player;
 import org.tunnelsnakes.util.RenderableComparator;
 
 public class BearState extends BasicGameState {
-    protected boolean loaded = false;
+
     
     protected int stateMap = 0;
-    
+  
     protected Player player;
     
     protected GameMap map;
+    
+    protected boolean PauseState = false;
+    
+    protected boolean PreviouslyEntered = false;
     
     //Queue which contains the renderable objects
     protected List<Renderable> renderQueue = new ArrayList<Renderable>();
@@ -59,29 +63,33 @@ public class BearState extends BasicGameState {
         }
 	}
     
-    @Override 
     public void enter(GameContainer gc, StateBasedGame game) {
-        loaded = true;
+        
     	gc.getInput().clearKeyPressedRecord();
-        TiledMap tmap = map.getMap();
-        int id;
-        for(int i = 0; i < tmap.getLayerCount(); i++) {
-        	for(int k = 0; k < tmap.getWidth(); k++) {
-        		for(int j = 0; j < tmap.getHeight(); j++) {
-        			id = tmap.getTileId(k, j, i);
-        			if(Boolean.parseBoolean(tmap.getTileProperty(id, "startingPos", "false"))) {
-        				player.getShape().setLocation(k * tmap.getTileWidth(), j * tmap.getTileHeight());
-        			}
-        		}
-        	}
-        }
-        map.update(gc, game, 1);
+		if(!PreviouslyEntered && !PauseState){
+			TiledMap tmap = map.getMap();
+			int id;
+			for(int i = 0; i < tmap.getLayerCount(); i++) {
+				for(int k = 0; k < tmap.getWidth(); k++) {
+					for(int j = 0; j < tmap.getHeight(); j++) {
+						id = tmap.getTileId(k, j, i);
+						if(Boolean.parseBoolean(tmap.getTileProperty(id, "startingPos", "false"))) {
+							player.getShape().setLocation(k * tmap.getTileWidth(), j * tmap.getTileHeight());
+						}
+					}
+				}
+			}
+			 map.update(gc, game, 1);
+		}
+		Game.getCamera().setMap(map);
+	        PreviouslyEntered = true;
+        
     }
     
-    @Override
-    public void leave(GameContainer gc, StateBasedGame game) {
-    	gc.getInput().clearKeyPressedRecord();
-    }
+    public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+        System.out.println("IngameState.leave() is called");
+//        music.stop();
+     }
 
 	@Override
 	public int getID() {

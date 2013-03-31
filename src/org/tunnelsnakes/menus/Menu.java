@@ -65,13 +65,15 @@ public class Menu implements KeyListener {
     
 
     public void keyPressed(int key, char c) {
-        if(key == Input.KEY_UP) {
-            this.setCurOption(curOption - 1);
-            if(curOption < 0) this.setCurOption(options.get(curPage).length - 1);
-        } else if(key == Input.KEY_DOWN) {
-            this.setCurOption(curOption + 1);
-            if(curOption == options.get(curPage).length) this.setCurOption(0);
-        }
+    	if(options.size()!=0){
+    		if(key == Input.KEY_UP) {
+    			this.setCurOption(curOption - 1);
+    			if(curOption < 0) this.setCurOption(options.get(curPage).length - 1);
+    		} else if(key == Input.KEY_DOWN) {
+    			this.setCurOption(curOption + 1);
+    			if(curOption == options.get(curPage).length) this.setCurOption(0);
+    		}
+    	}
     }
 
     public void keyReleased(int key, char c) {
