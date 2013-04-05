@@ -103,6 +103,7 @@ public class ResourceManager {
     }
     
     public static void load(String key, Music m) {
+    	m.stop();
         music.put(key, m);
     }
     

@@ -21,6 +21,7 @@ import org.tunnelsnakes.Game;
 import org.tunnelsnakes.entities.GameMap;
 import org.tunnelsnakes.ui.LoadingBar;
 import org.tunnelsnakes.util.AnimationUtils;
+import org.tunnelsnakes.util.KeyManager;
 import org.tunnelsnakes.util.Resource;
 import org.tunnelsnakes.util.ResourceManager;
 
@@ -46,6 +47,7 @@ public class LoadState extends BasicGameState {
     }
 
     public void init(GameContainer gc, StateBasedGame game) throws SlickException {
+    	
         time = gc.getTime();
     }
 
@@ -96,6 +98,7 @@ public class LoadState extends BasicGameState {
     
     @Override
     public void leave(GameContainer gc, StateBasedGame game) {
+    	new KeyManager(gc, game);
         try {
             ((Game) game).getState(Game.MAIN_MENU_STATE_ID).init(gc, game);
         } catch (SlickException e) {

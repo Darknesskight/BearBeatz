@@ -2,4 +2,5 @@
     <resource key="test" location="res/maps/test.tmx" />
     <resource key="level1" location="res/maps/level1.tmx" />
     <resource key="title" location="res/maps/title.tmx" />
+    <resource key="matt-tree-level" location="res/maps/matt-tree-level.tmx" />
 </resources>

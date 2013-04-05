@@ -131,6 +131,7 @@ public class MoveableEntity extends Entity {
             }
             setYPosition();
         } else {
+        	gravSpeed = 2.5;
             if(amount > 0) onGround = true;
             fixYPosition();
         }

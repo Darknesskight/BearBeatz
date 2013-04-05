@@ -23,17 +23,15 @@ public class StartMenu extends Menu {
     
     @Override
     public void render(GameContainer gc, StateBasedGame game, Graphics g) {
-    	g.drawImage(ResourceManager.getImage("pauseMenu"), 0, 0);
+     g.drawImage(ResourceManager.getImage("pauseMenu"), 0, 0);
         super.render(gc, game, g);
     }
 
     @Override
-    public void keyPressed(int key, char c) {
-        super.keyPressed(key, c);
-        if(options.size()!=0){
-        	if(key == Input.KEY_ENTER) {
-        		click();
-        	}
+    public void keyPressed(int key) {
+        super.keyPressed(key);
+        if(key == Input.KEY_ENTER) {
+            click();
         }
     }
     

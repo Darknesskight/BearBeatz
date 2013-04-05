@@ -9,6 +9,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 import org.tunnelsnakes.Game;
@@ -49,12 +50,16 @@ public class GameMap implements Renderable {
     //position in the level song, used for restarting the song when paused
     private float musicPosition = 0;
     
+    private Vector2f startingPos = new Vector2f(0,0);
+    
+	private float scale = 3.0f;
+    
     /**
      * Constructs a new GameMap with the given TiledMap
      * 
      * @param map TiledMap context
      */
-    public GameMap(TiledMap map) {
+    public GameMap(TiledMap map, float scale) {
         this.map = map;
         for(int i = 0; i < map.getLayerCount(); i++) {
             int priority = i;
@@ -68,6 +73,8 @@ public class GameMap implements Renderable {
         width = map.getWidth() * map.getTileWidth();
         height = map.getHeight() * map.getTileHeight();
         locateSpecials();
+        
+        this.scale = scale;
     }
     
     /**
@@ -230,5 +237,33 @@ public class GameMap implements Renderable {
 	@Override
 	public String toString() {
 		return map.toString();
+	}
+
+	/**
+	 * @return the startingPos
+	 */
+	public Vector2f getStartingPos() {
+		return startingPos;
+	}
+
+	/**
+	 * @param startingPos the startingPos to set
+	 */
+	public void setStartingPos(Vector2f startingPos) {
+		this.startingPos = startingPos;
+	}
+
+	/**
+	 * @return the scale
+	 */
+	public float getScale() {
+		return scale;
+	}
+
+	/**
+	 * @param scale the scale to set
+	 */
+	public void setScale(float scale) {
+		this.scale = scale;
 	}
 }

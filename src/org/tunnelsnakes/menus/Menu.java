@@ -9,7 +9,7 @@ import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.state.StateBasedGame;
 import org.tunnelsnakes.Game;
 
-public class Menu implements KeyListener {
+public class Menu {
     protected ArrayList<Option[]> options = new ArrayList<Option[]>();
     
     protected int curOption = 0;
@@ -41,12 +41,11 @@ public class Menu implements KeyListener {
 
     public void init(GameContainer gc, StateBasedGame game) {
         this.game = game;
-        Input input = gc.getInput();
-        input.enableKeyRepeat();
+        //Input input = gc.getInput();
+        //input.enableKeyRepeat();
         for(int i = 0; i < options.get(curPage).length; i++) {
             options.get(curPage)[i].init(gc, game);
         }
-        input.addKeyListener(this);
     }
 
     public void update(GameContainer gc, StateBasedGame game, int delta) {
@@ -64,19 +63,17 @@ public class Menu implements KeyListener {
     }
     
 
-    public void keyPressed(int key, char c) {
-    	if(options.size()!=0){
-    		if(key == Input.KEY_UP) {
-    			this.setCurOption(curOption - 1);
-    			if(curOption < 0) this.setCurOption(options.get(curPage).length - 1);
-    		} else if(key == Input.KEY_DOWN) {
-    			this.setCurOption(curOption + 1);
-    			if(curOption == options.get(curPage).length) this.setCurOption(0);
-    		}
-    	}
+    public void keyPressed(int key) {
+        if(key == Input.KEY_UP) {
+            this.setCurOption(curOption - 1);
+            if(curOption < 0) this.setCurOption(options.get(curPage).length - 1);
+        } else if(key == Input.KEY_DOWN) {
+            this.setCurOption(curOption + 1);
+            if(curOption == options.get(curPage).length) this.setCurOption(0);
+        }
     }
 
-    public void keyReleased(int key, char c) {
+    public void keyReleased(int key) {
     }
 
     public void inputEnded() {

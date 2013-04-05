@@ -29,7 +29,7 @@ import org.newdawn.slick.state.transition.FadeOutTransition;
  */
 public class Player extends ControlledEntity {
     //default jump speed
-    private final int DEF_JUMP_SPEED = 6;
+    private final int DEF_JUMP_SPEED = 7;
     
     
 	//boolean deteResourceManagerining if player is currently jumping
@@ -132,8 +132,8 @@ public class Player extends ControlledEntity {
     }
 
     @Override
-    public void keyPressed(int key, char c) {
-        super.keyPressed(key, c);
+    public void keyPressed(int key) {
+        super.keyPressed(key);
         if(key == Input.KEY_SPACE && onGround) {
             onGround = false;
             jump = true;
@@ -152,9 +152,9 @@ public class Player extends ControlledEntity {
     }
 
     @Override
-    public void keyReleased(int key, char c) {
+    public void keyReleased(int key) {
         releaseAnimation(key, false);
-        super.keyReleased(key, c);
+        super.keyReleased(key);
         if(key == Input.KEY_SPACE) {
             jump = false;
             gravCap = DEF_GRAV_CAP;
@@ -186,12 +186,12 @@ public class Player extends ControlledEntity {
     
     @Override
     protected void destroy() {
-        shape.setLocation(32, 32);
+    	shape.setLocation(map.getStartingPos());
         movementLine = new Path(shape.getCenterX(), shape.getCenterY());
     }
 
     private void checkDeath() {
-        if(shape.getY() > 1000) {
+        if(shape.getY() > map.getHeight() + 100) {
             destroy();
         }
     }

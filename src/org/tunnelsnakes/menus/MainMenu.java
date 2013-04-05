@@ -34,8 +34,8 @@ public class MainMenu extends Menu {
     }
 
     @Override
-    public void keyPressed(int key, char c) {
-        super.keyPressed(key, c);
+    public void keyPressed(int key) {
+        super.keyPressed(key);
         if(key == Input.KEY_ENTER) {
             click();
         }

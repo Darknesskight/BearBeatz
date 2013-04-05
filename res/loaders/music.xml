@@ -1,2 +1,3 @@
 <resources>
+    <resource key="treeLevel" location="res/music/treeLevel.ogg" />
 </resources>

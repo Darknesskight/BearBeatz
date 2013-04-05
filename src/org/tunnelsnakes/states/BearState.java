@@ -7,6 +7,7 @@ import java.util.List;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
@@ -16,10 +17,11 @@ import org.tunnelsnakes.entities.GameMap;
 import org.tunnelsnakes.entities.MapLayer;
 import org.tunnelsnakes.entities.Player;
 import org.tunnelsnakes.util.RenderableComparator;
+import org.tunnelsnakes.util.ResourceManager;
+import org.tunnelsnakes.util.KeyManager;
 
 public class BearState extends BasicGameState {
-
-    
+	
     protected int stateMap = 0;
   
     protected Player player;
@@ -30,9 +32,19 @@ public class BearState extends BasicGameState {
     
     protected boolean PreviouslyEntered = false;
     
+    protected String musicRef = "";
+    
+    private float musicPos = 0;
+    
+    private static KeyManager keys;
+    
     //Queue which contains the renderable objects
     protected List<Renderable> renderQueue = new ArrayList<Renderable>();
     
+    @Override
+    public boolean isAcceptingInput(){
+		return false;
+    }
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame game) throws SlickException {
@@ -63,9 +75,16 @@ public class BearState extends BasicGameState {
         }
 	}
     
-    public void enter(GameContainer gc, StateBasedGame game) {
-        
+	@Override
+	public void enter(GameContainer gc, StateBasedGame game) throws SlickException {
+		if(!musicRef.equals("")) {
+	        ResourceManager.getMusic(musicRef).setPosition(musicPos);
+	        ResourceManager.getMusic(musicRef).loop();
+		}
+        System.out.println(musicRef);
     	gc.getInput().clearKeyPressedRecord();
+    	Game.getCamera().setScale(map.getScale());
+		Game.getCamera().setMap(map);
 		if(!PreviouslyEntered && !PauseState){
 			TiledMap tmap = map.getMap();
 			int id;
@@ -74,6 +93,7 @@ public class BearState extends BasicGameState {
 					for(int j = 0; j < tmap.getHeight(); j++) {
 						id = tmap.getTileId(k, j, i);
 						if(Boolean.parseBoolean(tmap.getTileProperty(id, "startingPos", "false"))) {
+							map.setStartingPos(new Vector2f(k * tmap.getTileWidth(), j * tmap.getTileHeight()));
 							player.getShape().setLocation(k * tmap.getTileWidth(), j * tmap.getTileHeight());
 						}
 					}
@@ -81,19 +101,29 @@ public class BearState extends BasicGameState {
 			}
 			 map.update(gc, game, 1);
 		}
-		Game.getCamera().setMap(map);
-	        PreviouslyEntered = true;
-        
+        PreviouslyEntered = true;
     }
     
+	@Override
     public void leave(GameContainer container, StateBasedGame game) throws SlickException {
         System.out.println("IngameState.leave() is called");
-//        music.stop();
+        if(!musicRef.equals("")) {
+	        musicPos = ResourceManager.getMusic(musicRef).getPosition();
+	        ResourceManager.getMusic(musicRef).stop();
+        }
      }
 
 	@Override
 	public int getID() {
 		return -1;
+	}
+
+	public void handleKeyPress(int key) {
+		player.keyPressed(key);
+	}
+
+	public void handleKeyRelease(int key) {
+		player.keyReleased(key);
 	}
 
 }

@@ -17,7 +17,7 @@ import org.tunnelsnakes.util.ResourceManager;
 import org.tunnelsnakes.Game;
 
 public class PauseState extends BearState {
-    private StartMenu menu;
+    private Menu menu;
     private StateBasedGame game;
 	@Override
 	public void init(GameContainer gc, StateBasedGame game) throws SlickException {
@@ -25,20 +25,25 @@ public class PauseState extends BearState {
 	}
 
     public void enter(GameContainer gc, StateBasedGame game) {
-        //menu = new StartMenu(30);
-        //menu.init(gc, game);
+        menu = new StartMenu(30);
+        menu.init(gc, game);
     	this.game = game;
+    	Game.getCamera().setScale(3.0f);
     }
-    public void keyPressed(int key, char c) {
-    	if(key == Input.KEY_ENTER) {
-    		game.enterState(Game.IN_GAME_STATE_ID, new FadeOutTransition(), new FadeInTransition());
-    		Game.getCamera().setMap(map);
-    	}
-    }
+
+    
+    @Override
+    public void handleKeyPress(int key) {
+    	menu.keyPressed(key);
+	}
+    @Override
+    public void handleKeyRelease(int key) {
+    	menu.keyReleased(key);
+	}
     
 	@Override
 	public void update(GameContainer gc, StateBasedGame game, int delta) throws SlickException {
-		//menu.update(gc, game, delta);
+		menu.update(gc, game, delta);
 	}
 
 	@Override
@@ -46,7 +51,8 @@ public class PauseState extends BearState {
             g.scale(Game.getCamera().getScale(), Game.getCamera().getScale());
             g.setColor(Color.blue);
             g.fillRect(0, 0, gc.getWidth(), gc.getHeight());
-            g.drawImage(ResourceManager.getImage("pauseMenu"), 0, 0);        
+            g.drawImage(ResourceManager.getImage("pauseMenu"), 0, 0);   
+            menu.render(gc, game, g);
 	}
 
 	@Override

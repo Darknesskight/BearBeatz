@@ -15,7 +15,7 @@ import org.newdawn.slick.state.StateBasedGame;
  * @author Tucker Lein
  *
  */
-public class ControlledEntity extends MoveableEntity implements KeyListener {
+public class ControlledEntity extends MoveableEntity  {
 	//Stack that contains ALL input fed in through the input device
     private Stack<Integer> inputStack = new Stack<Integer>();
     
@@ -40,7 +40,6 @@ public class ControlledEntity extends MoveableEntity implements KeyListener {
     @Override
     public void init(GameContainer gc, StateBasedGame game) {
         super.init(gc, game);
-        gc.getInput().addKeyListener(this);
     }
 
     /**
@@ -69,6 +68,7 @@ public class ControlledEntity extends MoveableEntity implements KeyListener {
     
     public void clearInput(){
     	inMoveStack.clear();
+    	inputStack.clear();
     }
 
     /**
@@ -77,7 +77,7 @@ public class ControlledEntity extends MoveableEntity implements KeyListener {
      * @param key Input key of the pressed key
      * @param char of the pressed key
      */
-    public void keyPressed(int key, char c) {
+    public void keyPressed(int key) {
         if(key == Input.KEY_LEFT || 
                 key == Input.KEY_RIGHT) {
             inMoveStack.add(key);
@@ -93,7 +93,7 @@ public class ControlledEntity extends MoveableEntity implements KeyListener {
      * @param key Input key of the released key
      * @param char of the released key
      */
-    public void keyReleased(int key, char c) {
+    public void keyReleased(int key) {
         if(key == Input.KEY_LEFT || 
                 key == Input.KEY_RIGHT) {
             inMoveStack.remove((Integer)key);

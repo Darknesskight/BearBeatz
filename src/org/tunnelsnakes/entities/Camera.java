@@ -135,4 +135,11 @@ public class Camera {
 		this.map = map;
 	}
 
+	/**
+	 * @param scale the scale to set
+	 */
+	public void setScale(float scale) {
+		this.scale = scale;
+	}
+
 }

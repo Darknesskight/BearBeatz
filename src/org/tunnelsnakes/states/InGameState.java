@@ -19,16 +19,17 @@ public class InGameState extends BearState {
 	
 	@Override
     public void init(GameContainer gc, StateBasedGame game) throws SlickException {
+		musicRef = "treeLevel";
 		renderQueue.clear();
     	try {
-    		map = new GameMap(ResourceManager.getMap("level1"));
-    		System.out.println(map + " SDFSDFSDSD");
+    		map = new GameMap(ResourceManager.getMap("matt-tree-level"), 2.0f);
     		
     		player = new Player(new SmRectangle(0, 0, 32, 32), map);
             player.init(gc, game);
     	} catch(Exception e) {}
     	super.init(gc, game);
     }
+	
 
 	@Override
     public void update(GameContainer gc, StateBasedGame game, int delta) throws SlickException {
@@ -43,8 +44,15 @@ public class InGameState extends BearState {
         }
     }
 	
+	@Override
+	public void enter(GameContainer gc, StateBasedGame game) throws SlickException {
+		super.enter(gc, game);
+		System.out.println("entering InGameState");
+	}
 	
-	public void leave(GameContainer gc, StateBasedGame game){
+	@Override
+	public void leave(GameContainer gc, StateBasedGame game) throws SlickException {
+		super.leave(gc, game);
 		player.clearInput();
 	}
 

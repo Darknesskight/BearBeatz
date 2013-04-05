@@ -19,7 +19,7 @@ public class MainMenuState extends BearState {
     public void init(GameContainer gc, StateBasedGame game) throws SlickException { 
     	
     	try {
-    		map = new GameMap(ResourceManager.getMap("title"));
+    		map = new GameMap(ResourceManager.getMap("title"), 3.0f);
     		Game.getCamera().setMap(map);
     		player = new Player(new SmRectangle(0, 0, 32, 32), map);
             player.init(gc, game);
@@ -41,6 +41,12 @@ public class MainMenuState extends BearState {
     public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException {
 		super.render(gc, game, g);
     }
+	
+	@Override
+	public void enter(GameContainer gc, StateBasedGame game) throws SlickException {
+		super.enter(gc, game);
+		System.out.println("entering MainMenuState");
+	}
 
     @Override
     public int getID() {
