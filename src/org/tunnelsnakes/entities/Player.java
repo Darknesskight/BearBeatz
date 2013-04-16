@@ -31,6 +31,7 @@ public class Player extends ControlledEntity {
     //default jump speed
     private final int DEF_JUMP_SPEED = 7;
     
+    private String currBear = "Bear";
     
 	//boolean deteResourceManagerining if player is currently jumping
     private boolean jump = false;
@@ -44,7 +45,7 @@ public class Player extends ControlledEntity {
     //speed to add to the player's movement speed for sprinting
     private int sprintSpeed = 4;
     
-    
+    private StateBasedGame game;
     //Stack containing the animations being used by the player. Only the top of the stack will render
     private Stack<Animation> animationStack = new Stack<Animation>();
     
@@ -66,12 +67,13 @@ public class Player extends ControlledEntity {
      */
     @Override
     public void init(GameContainer gc, StateBasedGame game) {
+    	this.game = game;
         super.init(gc, game);
     }
     
     public void setupAnimations(StateBasedGame game) {
         //Set and load player's static 'animation'
-        Image[] player = new Image[] { ResourceManager.getAnimation("playerWalkRight").getImage(0) };
+        Image[] player = new Image[] { ResourceManager.getAnimation(currBear +"playerWalkRight").getImage(0) };
         ResourceManager.load("playerRight", new Animation(player, 1));
         ResourceManager.load("playerLeft", AnimationUtils.returnFlippedAnimation(new Animation(player, 1)));
         animationStack.push(ResourceManager.getAnimation("playerRight"));
@@ -134,6 +136,24 @@ public class Player extends ControlledEntity {
     @Override
     public void keyPressed(int key) {
         super.keyPressed(key);
+        if(key == Input.KEY_1){
+        	currBear = "Bear";
+        	shape = new SmRectangle(shape.getX(), shape.getY(), 42, 30);
+        	animationStack.clear();
+        	this.setupAnimations(game);
+        }
+        else if(key == Input.KEY_2){
+        	currBear = "PolarBear";
+        	shape = new SmRectangle(shape.getX(), shape.getY(), 42, 30);
+        	animationStack.clear();
+        	this.setupAnimations(game);
+        }
+        else if(key == Input.KEY_3){
+        	currBear = "KoalaBear";
+        	shape = new SmRectangle(shape.getX(), shape.getY()-15, 28, 45);
+        	animationStack.clear();
+        	this.setupAnimations(game);
+        }
         if(key == Input.KEY_SPACE && onGround) {
             onGround = false;
             jump = true;
@@ -198,10 +218,10 @@ public class Player extends ControlledEntity {
     
     private void changeCurAnimation(int inputKey) {
         if(inputKey == Input.KEY_LEFT) {
-            animationStack.push(ResourceManager.getAnimation("playerWalkLeft"));
+            animationStack.push(ResourceManager.getAnimation(currBear + "playerWalkLeft"));
             removeNonMovementAnimations();
         } else if(inputKey == Input.KEY_RIGHT) {
-            animationStack.push(ResourceManager.getAnimation("playerWalkRight"));
+            animationStack.push(ResourceManager.getAnimation(currBear + "playerWalkRight"));
             removeNonMovementAnimations();
         } else if(inputKey == Input.KEY_SPACE) {
             //if(dir.equals("left")) animationStack.push(ResourceManager.getAnimation("playerJumpLeft"));
@@ -251,9 +271,9 @@ public class Player extends ControlledEntity {
                 //animationStack.remove(ResourceManager.getAnimation("playerJumpRight"));
             }
         } else if(inputKey == Input.KEY_LEFT) {
-            animationStack.remove(ResourceManager.getAnimation("playerWalkLeft"));
+            animationStack.remove(ResourceManager.getAnimation(currBear + "playerWalkLeft"));
         } else if(inputKey == Input.KEY_RIGHT) {
-            animationStack.remove(ResourceManager.getAnimation("playerWalkRight"));
+            animationStack.remove(ResourceManager.getAnimation(currBear + "playerWalkRight"));
         }
     }
     

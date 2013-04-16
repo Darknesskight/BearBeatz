@@ -21,7 +21,7 @@ public class MainMenuState extends BearState {
     	try {
     		map = new GameMap(ResourceManager.getMap("title"), 3.0f);
     		Game.getCamera().setMap(map);
-    		player = new Player(new SmRectangle(0, 0, 32, 32), map);
+    		player = new Player(new SmRectangle(0, 0, 42, 30), map);
             player.init(gc, game);
             super.init(gc, game);
     	} catch(Exception e) {}

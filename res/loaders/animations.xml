@@ -1,4 +1,8 @@
 <resources>
-	<resource key="playerWalkRight" location="res/images/entities/player/bear.png" tileWidth="44" tileHeight="32" animationSpeed="100" />
-	<resource key="playerWalkLeft" location="res/images/entities/player/bear.png" tileWidth="44" tileHeight="32" animationSpeed="100" flip="true" />
+	<resource key="BearplayerWalkRight" location="res/images/entities/player/bear.png" tileWidth="42" tileHeight="30" animationSpeed="100" />
+	<resource key="BearplayerWalkLeft" location="res/images/entities/player/bear.png" tileWidth="42" tileHeight="30" animationSpeed="100" flip="true" />
+	<resource key="PolarBearplayerWalkRight" location="res/images/entities/player/PolarBear.png" tileWidth="42" tileHeight="30" animationSpeed="100" />
+	<resource key="PolarBearplayerWalkLeft" location="res/images/entities/player/PolarBear.png" tileWidth="42" tileHeight="30" animationSpeed="100" flip="true" />
+	<resource key="KoalaBearplayerWalkRight" location="res/images/entities/player/Koala.png" tileWidth="28" tileHeight="45" animationSpeed="100" />
+	<resource key="KoalaBearplayerWalkLeft" location="res/images/entities/player/Koala.png" tileWidth="28" tileHeight="45" animationSpeed="100" flip="true" />
 </resources>

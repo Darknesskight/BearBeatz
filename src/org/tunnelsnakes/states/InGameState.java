@@ -24,7 +24,7 @@ public class InGameState extends BearState {
     	try {
     		map = new GameMap(ResourceManager.getMap("matt-tree-level"), 2.0f);
     		
-    		player = new Player(new SmRectangle(0, 0, 32, 32), map);
+    		player = new Player(new SmRectangle(0, 0, 42, 30), map);
             player.init(gc, game);
     	} catch(Exception e) {}
     	super.init(gc, game);
