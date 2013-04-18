@@ -45,7 +45,7 @@ public class MoveableEntity extends Entity {
     //true if player should skip next one way collision
     protected boolean skipOneWay = false;
     
-    
+    protected boolean climbing = false;
     
     //Speed the gravity is currently exerting on the entity
     protected double gravSpeed = 0;
@@ -101,7 +101,7 @@ public class MoveableEntity extends Entity {
     @Override
     public void update(GameContainer gc, StateBasedGame game, int delta) {
         super.update(gc, game, delta);
-        if(gravity) {
+        if(gravity & !climbing) {
 	        if(gravSpeed < gravCap) gravSpeed += 0.5;
 	        yMovement((int)gravSpeed, game);
         }

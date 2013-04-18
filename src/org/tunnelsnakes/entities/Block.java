@@ -15,6 +15,8 @@ import org.newdawn.slick.state.StateBasedGame;
 public class Block extends Entity {
 	//Determines if the block is a one way platform. Meaning an entity will only collide with it from the top
     private boolean oneWay = false;
+    private boolean climbable = false;
+    private boolean walkthrough = false;
 
     /**
      * Constructor which creates the base Entity
@@ -56,4 +58,9 @@ public class Block extends Entity {
     public boolean isOneWay() {
         return oneWay;
     }
+
+	public void setClimbable(boolean b) {
+		climbable = b;
+		walkthrough = true;
+	}
 }

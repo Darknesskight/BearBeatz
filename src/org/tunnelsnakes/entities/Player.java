@@ -15,6 +15,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Path;
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
@@ -38,6 +39,10 @@ public class Player extends ControlledEntity {
     
     //boolean deteResourceManagerining if player is currently sprinting
     private boolean sprint = false;
+    
+    private boolean moveUp = false;
+    
+    private boolean moveDown = false;
     
     //speed of the jump
     private double jumpSpeed = DEF_JUMP_SPEED;
@@ -81,6 +86,7 @@ public class Player extends ControlledEntity {
     
     @Override
     public void update(GameContainer gc, StateBasedGame game, int delta) {
+    	SpecialPower();
         super.update(gc, game, delta);
         if(!getInMoveStack().isEmpty()) getMovement(getInMoveStack().peek(), game);
         if(animationStack.size() == 1) {
@@ -88,6 +94,7 @@ public class Player extends ControlledEntity {
             if(dir.equals("right")) animationStack.set(0, ResourceManager.getAnimation("playerRight"));
         }
         jump(game);
+        
         checkDeath();
         checkWarps(gc, game);
     }
@@ -138,23 +145,31 @@ public class Player extends ControlledEntity {
         super.keyPressed(key);
         if(key == Input.KEY_1){
         	currBear = "Bear";
-        	shape = new SmRectangle(shape.getX(), shape.getY(), 42, 30);
+        	climbing = false;
+        	shape = new SmRectangle(shape.getX(), shape.getY()-(30-shape.getHeight()), 42, 30);
         	animationStack.clear();
         	this.setupAnimations(game);
         }
         else if(key == Input.KEY_2){
         	currBear = "PolarBear";
-        	shape = new SmRectangle(shape.getX(), shape.getY(), 42, 30);
+        	climbing = false;
+        	shape = new SmRectangle(shape.getX(), shape.getY()-(30-shape.getHeight()), 42, 30);
         	animationStack.clear();
         	this.setupAnimations(game);
         }
         else if(key == Input.KEY_3){
         	currBear = "KoalaBear";
-        	shape = new SmRectangle(shape.getX(), shape.getY()-15, 28, 45);
+        	shape = new SmRectangle(shape.getX(), shape.getY()-(45-shape.getHeight()), 28, 45);
         	animationStack.clear();
         	this.setupAnimations(game);
         }
-        if(key == Input.KEY_SPACE && onGround) {
+        if(key == Input.KEY_UP){
+        	moveUp=true;
+        }
+        if(key == Input.KEY_DOWN){
+        	moveDown=true;
+        }
+        if(key == Input.KEY_SPACE && (onGround||climbing)) {
             onGround = false;
             jump = true;
             gravCap = 0;
@@ -171,10 +186,35 @@ public class Player extends ControlledEntity {
         changeCurAnimation(key);
     }
 
+    public void SpecialPower(){
+    	if(currBear.equals("KoalaBear")){
+    		//System.out.println("KOALA");
+    		if(checkClimbable()){
+    			System.out.println("CLIMB");
+    			climbing = true;
+    			if(moveUp){
+    				yMovement(-3, game);
+    			}
+    			if(moveDown){
+    				yMovement(3, game);
+    			}
+    		}
+    		else
+    			climbing = false;
+    		
+    	}
+    }
+    
     @Override
     public void keyReleased(int key) {
         releaseAnimation(key, false);
         super.keyReleased(key);
+        if(key == Input.KEY_UP){
+        	moveUp=false;
+        }
+        if(key == Input.KEY_DOWN){
+        	moveDown=false;
+        }
         if(key == Input.KEY_SPACE) {
             jump = false;
             gravCap = DEF_GRAV_CAP;
@@ -184,6 +224,29 @@ public class Player extends ControlledEntity {
         } 
     }
     
+    private boolean checkClimbable(){
+    	boolean colliding = false;
+        float distance = Float.MAX_VALUE;
+        Vector2f shapeCoord = new Vector2f(shape.getCenterX(), shape.getCenterY());
+        Vector2f colCoord = new Vector2f(0, 0);
+        for(Block b : map.getSpecial()) {
+            if(shape.intersects(b.getShape())) { //if it collides with the shape and if it is a validOneWayCollision
+            	if(!skipOneWay) {
+	                colCoord.set(b.getShape().getCenterX(), b.getShape().getCenterY());
+	                if(shapeCoord.distance(colCoord) < distance) { //set collidingBlock if the distance between it and the shapeToCheck is the shortest found
+	                    distance = shapeCoord.distance(colCoord);
+	                    collidingBlock = b;
+	                }
+	                colliding = true;
+            	} else {
+            		if(b.getShape().getY() > collidingBlock.getShape().getY()) {
+            			skipOneWay = false;
+            		}
+            	}
+            } 
+        }
+        return colliding;
+    }
     
     private void jump(StateBasedGame game) {
         if(jump) {

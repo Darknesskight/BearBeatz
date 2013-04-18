@@ -35,6 +35,8 @@ public class GameMap implements Renderable {
     //List containing all the warps on the map
     private List<Warp> warps = new ArrayList<Warp>();
     
+    private List<Block> special = new ArrayList<Block>();
+    
     //All MapLayers on the map
     private List<MapLayer> layers = new ArrayList<MapLayer>();
     
@@ -110,6 +112,13 @@ public class GameMap implements Renderable {
                 			this,
                 			map.getTileProperty(tileId, "warpType", "null"),
                 			map.getTileProperty(tileId, "warpValue", "null")));
+                }
+                else if(Boolean.parseBoolean(map.getTileProperty(tileId, "climbable", "false"))){
+                	special.add(new Block(new Rectangle(i * map.getTileWidth(), k * map.getTileHeight(), 
+                            map.getTileWidth(), map.getTileHeight()), this));
+                	 if(Boolean.parseBoolean(map.getTileProperty(tileId, "climbable", "false")))  {
+                	     special.get(special.size()-1).setClimbable(true);
+                	 }
                 }
             }
         }
@@ -265,5 +274,10 @@ public class GameMap implements Renderable {
 	 */
 	public void setScale(float scale) {
 		this.scale = scale;
+	}
+
+	public List<Block> getSpecial() {
+		// TODO Auto-generated method stub
+		return special;
 	}
 }
