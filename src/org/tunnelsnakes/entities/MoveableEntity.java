@@ -173,7 +173,7 @@ public class MoveableEntity extends Entity {
      * @param shapeToCheck Shape used to check for collision against the blocks
      * @return true if colliding
      */
-    private boolean checkCollisions(List<Block> blocks, Shape shapeToCheck) {
+    protected boolean checkCollisions(List<Block> blocks, Shape shapeToCheck) {
         boolean colliding = false;
         float distance = Float.MAX_VALUE;
         Vector2f shapeCoord = new Vector2f(shape.getCenterX(), shape.getCenterY());

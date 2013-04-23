@@ -94,7 +94,7 @@ public class BearState extends BasicGameState {
 						id = tmap.getTileId(k, j, i);
 						if(Boolean.parseBoolean(tmap.getTileProperty(id, "startingPos", "false"))) {
 							map.setStartingPos(new Vector2f(k * tmap.getTileWidth(), j * tmap.getTileHeight()));
-							player.getShape().setLocation(k * tmap.getTileWidth(), j * tmap.getTileHeight());
+							player.getShape().setLocation(k * tmap.getTileWidth(), j * tmap.getTileHeight()+32 - player.getShape().getHeight());
 						}
 					}
 				}

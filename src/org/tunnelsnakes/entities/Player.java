@@ -143,21 +143,21 @@ public class Player extends ControlledEntity {
     @Override
     public void keyPressed(int key) {
         super.keyPressed(key);
-        if(key == Input.KEY_1){
+        if(key == Input.KEY_1 && !checkCollisions(map.getBlocks(), new SmRectangle(shape.getX(), shape.getY()-(30-shape.getHeight()), 42, 30))){
         	currBear = "Bear";
         	climbing = false;
         	shape = new SmRectangle(shape.getX(), shape.getY()-(30-shape.getHeight()), 42, 30);
         	animationStack.clear();
         	this.setupAnimations(game);
         }
-        else if(key == Input.KEY_2){
+        else if(key == Input.KEY_2 && !checkCollisions(map.getBlocks(), new SmRectangle(shape.getX(), shape.getY()-(30-shape.getHeight()), 42, 30))){
         	currBear = "PolarBear";
         	climbing = false;
         	shape = new SmRectangle(shape.getX(), shape.getY()-(30-shape.getHeight()), 42, 30);
         	animationStack.clear();
         	this.setupAnimations(game);
         }
-        else if(key == Input.KEY_3){
+        else if(key == Input.KEY_3 && !checkCollisions(map.getBlocks(), new SmRectangle(shape.getX(), shape.getY()-(45-shape.getHeight()), 28, 45))){
         	currBear = "KoalaBear";
         	shape = new SmRectangle(shape.getX(), shape.getY()-(45-shape.getHeight()), 28, 45);
         	animationStack.clear();
@@ -190,6 +190,7 @@ public class Player extends ControlledEntity {
     	if(currBear.equals("KoalaBear")){
     		//System.out.println("KOALA");
     		if(checkClimbable()){
+    			gravSpeed=0;
     			System.out.println("CLIMB");
     			climbing = true;
     			if(moveUp){
@@ -269,7 +270,7 @@ public class Player extends ControlledEntity {
     
     @Override
     protected void destroy() {
-    	shape.setLocation(map.getStartingPos());
+    	shape.setLocation(map.getStartingPos().getX(), map.getStartingPos().getY()+32 - this.getShape().getHeight());
         movementLine = new Path(shape.getCenterX(), shape.getCenterY());
     }
 
